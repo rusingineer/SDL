@@ -3453,6 +3453,7 @@ case "$host" in
         CheckOpenGLX11
         CheckOpenGLESX11
         CheckVulkan
+        CheckMir
         CheckWayland
         CheckInputEvents
         CheckLibUDev
