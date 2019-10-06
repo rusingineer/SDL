@@ -99,6 +99,7 @@ static SDL_HIDAPI_DeviceDriver *SDL_HIDAPI_drivers[] = {
 static int SDL_HIDAPI_numdrivers = 0;
 static SDL_HIDAPI_Device *SDL_HIDAPI_devices;
 static int SDL_HIDAPI_numjoysticks = 0;
+static SDL_bool initialized = SDL_FALSE;
 
 #if defined(SDL_USE_LIBUDEV)
 static const SDL_UDEV_Symbols * usyms = NULL;
@@ -696,6 +697,10 @@ HIDAPI_JoystickInit(void)
 {
     int i;
 
+    if (initialized) {
+        return 0;
+    }
+
     if (hid_init() < 0) {
         SDL_SetError("Couldn't initialize hidapi");
         return -1;
@@ -709,6 +714,9 @@ HIDAPI_JoystickInit(void)
                         SDL_HIDAPIDriverHintChanged, NULL);
     HIDAPI_InitializeDiscovery();
     HIDAPI_JoystickDetect();
+
+    initialized = SDL_TRUE;
+
     return 0;
 }
 
@@ -910,6 +918,11 @@ HIDAPI_IsDevicePresent(Uint16 vendor_id, Uint16 product_id, Uint16 version)
 {
     SDL_HIDAPI_Device *device;
 
+    /* Make sure we're initialized, as this could be called from other drivers during startup */
+    if (HIDAPI_JoystickInit() < 0) {
+        return SDL_FALSE;
+    }
+
     /* Don't update the device list for devices we know aren't supported */
     if (!HIDAPI_IsDeviceSupported(vendor_id, product_id, version)) {
         return SDL_FALSE;
@@ -1059,6 +1072,8 @@ HIDAPI_JoystickQuit(void)
     SDL_HIDAPI_numjoysticks = 0;
 
     hid_exit();
+
+    initialized = SDL_FALSE;
 }
 
 SDL_JoystickDriver SDL_HIDAPI_JoystickDriver =
