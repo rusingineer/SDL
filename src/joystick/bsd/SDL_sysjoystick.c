@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -206,8 +206,8 @@ static void report_free(struct report *);
 
 static int numjoysticks = 0;
 
-static int BSD_JoystickOpen(SDL_Joystick * joy, int device_index);
-static void BSD_JoystickClose(SDL_Joystick * joy);
+static int BSD_JoystickOpen(SDL_Joystick *joy, int device_index);
+static void BSD_JoystickClose(SDL_Joystick *joy);
 
 static int
 BSD_JoystickInit(void)
@@ -276,6 +276,11 @@ BSD_JoystickGetDevicePlayerIndex(int device_index)
     return -1;
 }
 
+static void
+BSD_JoystickSetDevicePlayerIndex(int device_index, int player_index)
+{
+}
+
 /* Function to perform the mapping from device index to the instance id for this index */
 static SDL_JoystickID
 BSD_JoystickGetDeviceInstanceID(int device_index)
@@ -335,7 +340,7 @@ hatval_to_sdl(Sint32 hatval)
 
 
 static int
-BSD_JoystickOpen(SDL_Joystick * joy, int device_index)
+BSD_JoystickOpen(SDL_Joystick *joy, int device_index)
 {
     char *path = joynames[device_index];
     struct joystick_hwdata *hw;
@@ -527,7 +532,7 @@ desc_failed:
 }
 
 static void
-BSD_JoystickUpdate(SDL_Joystick * joy)
+BSD_JoystickUpdate(SDL_Joystick *joy)
 {
     struct hid_item hitem;
     struct hid_data *hdata;
@@ -661,7 +666,7 @@ BSD_JoystickUpdate(SDL_Joystick * joy)
 
 /* Function to close a joystick after use */
 static void
-BSD_JoystickClose(SDL_Joystick * joy)
+BSD_JoystickClose(SDL_Joystick *joy)
 {
     if (SDL_strncmp(joy->hwdata->path, "/dev/joy", 8)) {
         report_free(&joy->hwdata->inreport);
@@ -752,7 +757,37 @@ report_free(struct report *r)
 }
 
 static int
-BSD_JoystickRumble(SDL_Joystick * joystick, Uint16 low_frequency_rumble, Uint16 high_frequency_rumble, Uint32 duration_ms)
+BSD_JoystickRumble(SDL_Joystick *joystick, Uint16 low_frequency_rumble, Uint16 high_frequency_rumble)
+{
+    return SDL_Unsupported();
+}
+
+static int
+BSD_JoystickRumbleTriggers(SDL_Joystick *joystick, Uint16 left_rumble, Uint16 right_rumble)
+{
+    return SDL_Unsupported();
+}
+
+static SDL_bool
+BSD_JoystickGetGamepadMapping(int device_index, SDL_GamepadMapping *out)
+{
+    return SDL_FALSE;
+}
+
+static SDL_bool
+BSD_JoystickHasLED(SDL_Joystick *joystick)
+{
+    return SDL_FALSE;
+}
+
+static int
+BSD_JoystickSetLED(SDL_Joystick *joystick, Uint8 red, Uint8 green, Uint8 blue)
+{
+    return SDL_Unsupported();
+}
+
+static int
+BSD_JoystickSetSensorsEnabled(SDL_Joystick *joystick, SDL_bool enabled)
 {
     return SDL_Unsupported();
 }
@@ -764,13 +799,19 @@ SDL_JoystickDriver SDL_BSD_JoystickDriver =
     BSD_JoystickDetect,
     BSD_JoystickGetDeviceName,
     BSD_JoystickGetDevicePlayerIndex,
+    BSD_JoystickSetDevicePlayerIndex,
     BSD_JoystickGetDeviceGUID,
     BSD_JoystickGetDeviceInstanceID,
     BSD_JoystickOpen,
     BSD_JoystickRumble,
+    BSD_JoystickRumbleTriggers,
+    BSD_JoystickHasLED,
+    BSD_JoystickSetLED,
+    BSD_JoystickSetSensorsEnabled,
     BSD_JoystickUpdate,
     BSD_JoystickClose,
     BSD_JoystickQuit,
+    BSD_JoystickGetGamepadMapping
 };
 
 #endif /* SDL_JOYSTICK_USBHID */

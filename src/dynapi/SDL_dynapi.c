@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -280,10 +280,10 @@ static void dynapi_warn(const char *msg)
     parts of SDL, because we don't want anything calling it without an
     extremely good reason. */
 #if defined(__WATCOMC__)
-void SDL_ExitProcess(const int exitcode);
+void SDL_ExitProcess(int exitcode);
 #pragma aux SDL_ExitProcess aborts;
 #endif
-SDL_NORETURN void SDL_ExitProcess(const int exitcode);
+SDL_NORETURN void SDL_ExitProcess(int exitcode);
 
 
 static void

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -123,6 +123,10 @@ SDL_MetalViewEventWatch(void *userdata, SDL_Event *event)
     metalLayer.drawableSize = NSSizeToCGSize(backingSize);
 }
 
+- (NSView *)hitTest:(NSPoint)point {
+    return nil;
+}
+
 @end
 
 SDL_MetalView
@@ -157,8 +161,15 @@ Cocoa_Metal_DestroyView(_THIS, SDL_MetalView view)
     [metalview removeFromSuperview];
 }}
 
+void *
+Cocoa_Metal_GetLayer(_THIS, SDL_MetalView view)
+{ @autoreleasepool {
+    SDL_cocoametalview *cocoaview = (__bridge SDL_cocoametalview *)view;
+    return (__bridge void *)cocoaview.layer;
+}}
+
 void
-Cocoa_Metal_GetDrawableSize(SDL_Window * window, int * w, int * h)
+Cocoa_Metal_GetDrawableSize(_THIS, SDL_Window * window, int * w, int * h)
 { @autoreleasepool {
     SDL_WindowData *data = (__bridge SDL_WindowData *)window->driverdata;
     NSView *view = data->nswindow.contentView;

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2019 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -24,10 +24,9 @@
 
 #ifdef HAVE_LIMITS_H
 #include <limits.h>
-#else
+#endif
 #ifndef SIZE_MAX
 #define SIZE_MAX ((size_t)-1)
-#endif
 #endif
 
 #include "../../core/windows/SDL_windows.h"
